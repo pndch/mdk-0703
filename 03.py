@@ -43,4 +43,4 @@ for r in rows:
 
 a = np.array(cols['age'])
 
-print(a.mean(), a.min(), a.max(), a.sum())
+print(np.median(a), a.mean(), a.min(), a.max(), a.sum())
