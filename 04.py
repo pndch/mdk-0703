@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt, seaborn as sns
 
 df = pd.read_csv('titanic.csv')
@@ -34,10 +35,21 @@ print(df.shape); print(df.head()); df.info(); print(df.describe())
 
 survived = df[df["survived"] == 1]["fare"]
 died = df[df["survived"] == 0]["fare"]
-
-#sns.barplot(x="survived", y="fare", data=df)
-
+print(df['fare'].unique)
 ### x - fare; y - survived
-plt.hist(x=survived, bins=30, alpha=0.5, label="x=fare, y=survived")
-plt.hist(x=died, bins=30, alpha=0.5)
+#plt.hist(x=survived, bins=30, alpha=0.5, label="x=fare, y=survived")
+#plt.hist(x=died, bins=30, alpha=0.5)
+#plt.show()
+
+df['fare_bin'] = pd.qcut(df['fare'], q=30)
+
+fare_survival = df.groupby('fare_bin')['survived'].agg(
+    count='count',
+    survival_rate='mean'
+).reset_index()
+
+fare_survival['percent'] = (fare_survival['survival_rate'] * 100).round(1)
+
+sns.barplot(data=fare_survival, x='fare_bin', y='percent')
+plt.xticks(rotation = 90)
 plt.show()
